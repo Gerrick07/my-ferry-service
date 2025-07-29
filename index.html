@@ -135,8 +135,13 @@
                  <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                         <h2 class="text-2xl font-bold text-gray-700 mb-2 md:mb-0">Confirmed Bookings</h2>
-                        <div class="text-xs text-gray-500 bg-gray-100 p-2 rounded-md">
-                            <span class="font-semibold">Your Admin User ID:</span> <span id="admin-user-id">loading...</span>
+                        <div class="flex items-center space-x-2">
+                             <button id="register-user-btn" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 text-sm">
+                                <i class="fas fa-user-plus mr-2"></i>Register User
+                            </button>
+                            <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 text-sm">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </button>
                         </div>
                     </div>
                     <div class="table-container overflow-x-auto">
@@ -152,7 +157,7 @@
                             </thead>
                             <tbody id="bookings-table-body" class="bg-white divide-y divide-gray-200">
                                 <!-- Bookings will be dynamically inserted here -->
-                                <tr><td colspan="5" class="text-center p-8 text-gray-500">Loading bookings...</td></tr>
+                                <tr><td colspan="5" class="text-center p-8 text-gray-500">Please log in to view bookings.</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -166,9 +171,7 @@
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg transform transition-all">
             <div class="p-8">
                 <h3 class="text-2xl font-bold text-gray-800 mb-4">Confirm Your Booking</h3>
-                <div id="modal-summary" class="space-y-3 text-gray-600">
-                    <!-- Booking summary will be injected here -->
-                </div>
+                <div id="modal-summary" class="space-y-3 text-gray-600"></div>
                 <div class="mt-6 pt-4 border-t">
                     <p class="text-xl font-bold text-indigo-700">Total Price: <span id="modal-total-price"></span></p>
                 </div>
@@ -182,11 +185,59 @@
         </div>
     </div>
 
-    <!-- Success Message Toast -->
-    <div id="success-toast" class="fixed top-5 right-5 bg-green-500 text-white py-3 px-6 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300">
-        <p><i class="fas fa-check-circle mr-2"></i>Booking confirmed!</p>
-        <p class="text-sm">Your Booking ID is: <strong id="success-booking-id"></strong></p>
+    <!-- Admin Login Modal -->
+    <div id="admin-login-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm">
+            <form id="admin-login-form" class="p-8">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Admin Login</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <input type="text" id="username" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" value="admin">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" value="admin">
+                    </div>
+                </div>
+                <p id="login-error" class="text-red-500 text-sm mt-2 text-center hidden">Invalid credentials. Please try again.</p>
+                <div class="mt-8">
+                    <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-700">Login</button>
+                </div>
+            </form>
+             <div class="bg-gray-50 px-8 py-4 border-t">
+                <button id="cancel-login-btn" class="w-full text-center text-sm text-gray-600 hover:text-gray-800">Cancel</button>
+            </div>
+        </div>
     </div>
+
+    <!-- Register User Modal -->
+    <div id="register-user-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm">
+            <form id="register-user-form" class="p-8">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Register New User</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="new-username" class="block text-sm font-medium text-gray-700 mb-1">New Username</label>
+                        <input type="text" id="new-username" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="new-password" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                        <input type="password" id="new-password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <button type="submit" class="w-full bg-green-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-600">Register User</button>
+                </div>
+            </form>
+             <div class="bg-gray-50 px-8 py-4 border-t">
+                <button id="cancel-register-btn" class="w-full text-center text-sm text-gray-600 hover:text-gray-800">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message Toast -->
+    <div id="success-toast" class="fixed top-5 right-5 bg-green-500 text-white py-3 px-6 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300"></div>
 
     <!-- Firebase and App Logic -->
     <script type="module">
@@ -196,7 +247,6 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Firebase Configuration ---
-        // These variables are provided by the environment.
         const firebaseConfig = {
   apiKey: "AIzaSyCK4ay5fkJlua3Y4ISCIlBC3N70UW2uAOk",
   authDomain: "myferrybooking.firebaseapp.com",
@@ -205,12 +255,15 @@
   messagingSenderId: "701482263912",
   appId: "1:701482263912:web:6493097278fc42db6562dd"
 };
+
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'ferry-booking-default';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // --- Global Variables ---
         let db, auth, userId;
         let currentBookingData = null;
+        let isAdminLoggedIn = false;
+        let unsubscribeFromBookings = null;
 
         // --- DOM Elements ---
         const bookingForm = document.getElementById('booking-form');
@@ -219,7 +272,10 @@
         const bookingView = document.getElementById('booking-view');
         const tabAdmin = document.getElementById('tab-admin');
         const tabBooking = document.getElementById('tab-booking');
-        
+        const adminLoginModal = document.getElementById('admin-login-modal');
+        const registerUserModal = document.getElementById('register-user-modal');
+        const successToast = document.getElementById('success-toast');
+
         // --- Initialization ---
         async function initializeFirebase() {
             try {
@@ -231,15 +287,11 @@
                     if (user) {
                         userId = user.uid;
                         console.log("User is signed in with UID:", userId);
-                        document.getElementById('admin-user-id').textContent = userId;
-                        // Once authenticated, start listening for bookings for the admin panel
-                        listenForBookings();
                     } else {
                         console.log("User is signed out.");
                     }
                 });
 
-                // Sign in the user
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
                 } else {
@@ -259,6 +311,16 @@
             tabBooking.classList.toggle('tab-active', viewId === 'booking-view');
             tabAdmin.classList.toggle('tab-active', viewId === 'admin-view');
         }
+        
+        // --- Toast Notification ---
+        function showToast(message, isSuccess = true) {
+            successToast.innerHTML = `<p><i class="fas ${isSuccess ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2"></i>${message}</p>`;
+            successToast.classList.replace(isSuccess ? 'bg-red-500' : 'bg-green-500', isSuccess ? 'bg-green-500' : 'bg-red-500');
+            successToast.classList.remove('translate-x-full');
+            setTimeout(() => {
+                successToast.classList.add('translate-x-full');
+            }, 4000);
+        }
 
         // --- Booking Form Logic ---
         bookingForm.addEventListener('submit', (e) => {
@@ -267,7 +329,7 @@
             const routeSelect = document.getElementById('route');
             const selectedOption = routeSelect.options[routeSelect.selectedIndex];
             const pricePerAdult = parseFloat(selectedOption.getAttribute('data-price'));
-            const pricePerChild = pricePerAdult * 0.5; // Children are half price
+            const pricePerChild = pricePerAdult * 0.5;
 
             const adults = parseInt(formData.get('adults'));
             const children = parseInt(formData.get('children'));
@@ -280,10 +342,9 @@
                 travelDate: formData.get('travelDate'),
                 passengers: { adults, children },
                 totalPrice: totalPrice,
-                status: 'Confirmed' // Default status
+                status: 'Confirmed'
             };
             
-            // Populate and show modal
             document.getElementById('modal-summary').innerHTML = `
                 <p><strong>Name:</strong> ${currentBookingData.fullName}</p>
                 <p><strong>Route:</strong> ${currentBookingData.route}</p>
@@ -294,63 +355,92 @@
             confirmationModal.classList.remove('hidden');
         });
 
-        // --- Modal Logic ---
-        document.getElementById('cancel-booking-btn').addEventListener('click', () => {
-            confirmationModal.classList.add('hidden');
-            currentBookingData = null;
-        });
-
+        // --- Booking Confirmation Modal Logic ---
+        document.getElementById('cancel-booking-btn').addEventListener('click', () => confirmationModal.classList.add('hidden'));
         document.getElementById('confirm-booking-btn').addEventListener('click', async () => {
             if (!currentBookingData || !db) return;
-            
             try {
                 const bookingId = `OF-${Date.now().toString().slice(-6)}`;
-                const docRef = await addDoc(collection(db, `/artifacts/${appId}/public/data/bookings`), {
+                await addDoc(collection(db, `/artifacts/${appId}/public/data/bookings`), {
                     ...currentBookingData,
                     bookingId: bookingId,
                     createdAt: serverTimestamp()
                 });
-
-                console.log("Document written with ID: ", docRef.id);
-                
-                // Show success toast
-                document.getElementById('success-booking-id').textContent = bookingId;
-                const successToast = document.getElementById('success-toast');
-                successToast.classList.remove('translate-x-full');
-                setTimeout(() => {
-                    successToast.classList.add('translate-x-full');
-                }, 4000);
-
-                // Hide modal and reset form
+                showToast(`Booking confirmed! ID: <strong>${bookingId}</strong>`);
                 confirmationModal.classList.add('hidden');
                 bookingForm.reset();
                 currentBookingData = null;
-
             } catch (e) {
                 console.error("Error adding document: ", e);
-                alert("There was an error saving your booking. Please try again.");
+                showToast("Error saving booking.", false);
             }
         });
 
-        // --- Admin Panel Logic ---
-        function listenForBookings() {
-            const bookingsCollection = collection(db, `/artifacts/${appId}/public/data/bookings`);
-            const q = query(bookingsCollection); // You could add orderBy here if you create an index in Firestore
+        // --- Admin Login Logic ---
+        document.getElementById('admin-login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginError = document.getElementById('login-error');
 
-            onSnapshot(q, (querySnapshot) => {
+            if (username === 'admin' && password === 'admin') {
+                isAdminLoggedIn = true;
+                adminLoginModal.classList.add('hidden');
+                loginError.classList.add('hidden');
+                document.getElementById('admin-login-form').reset();
+                showView('admin-view');
+                listenForBookings();
+            } else {
+                loginError.classList.remove('hidden');
+            }
+        });
+        
+        document.getElementById('cancel-login-btn').addEventListener('click', () => adminLoginModal.classList.add('hidden'));
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            isAdminLoggedIn = false;
+            if (unsubscribeFromBookings) {
+                unsubscribeFromBookings(); // Stop listening to db changes
+                unsubscribeFromBookings = null;
+            }
+            document.getElementById('bookings-table-body').innerHTML = `<tr><td colspan="5" class="text-center p-8 text-gray-500">Please log in to view bookings.</td></tr>`;
+            showView('booking-view');
+            showToast("You have been logged out.");
+        });
+
+        // --- User Registration Logic ---
+        document.getElementById('register-user-btn').addEventListener('click', () => registerUserModal.classList.remove('hidden'));
+        document.getElementById('cancel-register-btn').addEventListener('click', () => registerUserModal.classList.add('hidden'));
+        document.getElementById('register-user-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newUsername = document.getElementById('new-username').value;
+            // In a real app, you would securely save this, likely using Firebase Authentication.
+            // For this demo, we'll just show a success message.
+            console.log(`Registered new user: ${newUsername}`);
+            showToast(`User "${newUsername}" registered successfully!`);
+            registerUserModal.classList.add('hidden');
+            document.getElementById('register-user-form').reset();
+        });
+
+
+        // --- Admin Panel Data Logic ---
+        function listenForBookings() {
+            if (unsubscribeFromBookings) return; // Already listening
+            
+            const bookingsCollection = collection(db, `/artifacts/${appId}/public/data/bookings`);
+            const q = query(bookingsCollection);
+
+            unsubscribeFromBookings = onSnapshot(q, (querySnapshot) => {
                 const tableBody = document.getElementById('bookings-table-body');
                 if (querySnapshot.empty) {
                     tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-8 text-gray-500">No bookings found yet.</td></tr>`;
                     return;
                 }
 
-                tableBody.innerHTML = ''; // Clear existing rows
+                tableBody.innerHTML = ''; 
                 const bookings = [];
-                querySnapshot.forEach(doc => {
-                    bookings.push({ id: doc.id, ...doc.data() });
-                });
+                querySnapshot.forEach(doc => bookings.push({ id: doc.id, ...doc.data() }));
                 
-                // Sort by creation date descending (newest first)
                 bookings.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
 
                 bookings.forEach(booking => {
@@ -385,7 +475,7 @@
                 });
             }, (error) => {
                 console.error("Error listening to bookings:", error);
-                tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-8 text-red-500">Error fetching bookings. Check console for details.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-8 text-red-500">Error fetching bookings.</td></tr>`;
             });
         }
 
@@ -397,33 +487,31 @@
                 
                 const docRef = doc(db, `/artifacts/${appId}/public/data/bookings`, docId);
                 try {
-                    await updateDoc(docRef, {
-                        status: newStatus
-                    });
-                    console.log(`Booking ${docId} status updated to ${newStatus}`);
-                    // Optional: show a small success indicator
-                    e.target.style.borderColor = 'green';
-                    setTimeout(() => { e.target.style.borderColor = ''; }, 1000);
+                    await updateDoc(docRef, { status: newStatus });
+                    showToast(`Booking status updated to ${newStatus}`);
                 } catch (error) {
                     console.error("Error updating status: ", error);
-                    alert('Failed to update status.');
-                    // Optional: show an error indicator
-                     e.target.style.borderColor = 'red';
-                    setTimeout(() => { e.target.style.borderColor = ''; }, 1000);
+                    showToast('Failed to update status.', false);
                 }
             }
         });
         
         // --- Event Listeners for Tabs ---
         tabBooking.addEventListener('click', () => showView('booking-view'));
-        tabAdmin.addEventListener('click', () => showView('admin-view'));
+        tabAdmin.addEventListener('click', () => {
+            if (isAdminLoggedIn) {
+                showView('admin-view');
+            } else {
+                adminLoginModal.classList.remove('hidden');
+            }
+        });
         
         // --- Set minimum date for travel date input to today ---
         function setMinTravelDate() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('travelDate').setAttribute('min', today);
         }
- 
+
         // --- Initial Load ---
         document.addEventListener('DOMContentLoaded', () => {
             setMinTravelDate();
