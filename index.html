@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OceanLink Ferry Services - Booking</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Custom styles to enhance the look and feel */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .tab-active {
+            border-bottom-color: #3b82f6;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        /* Custom scrollbar for the bookings table on smaller screens */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: #e0e7ff;
+            border-radius: 10px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: #6366f1;
+            border-radius: 10px;
+        }
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-indigo-700">
+                <i class="fas fa-ship mr-3"></i>OceanLink Ferry
+            </h1>
+            <p class="text-gray-500 mt-2">Your Gateway to the Islands</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="mb-8 border-b border-gray-200">
+            <nav class="flex -mb-px space-x-6" aria-label="Tabs">
+                <button id="tab-booking" class="py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-600 hover:border-blue-300 tab-active">
+                    <i class="fas fa-ticket-alt mr-2"></i>New Booking
+                </button>
+                <button id="tab-admin" class="py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-600 hover:border-blue-300">
+                    <i class="fas fa-user-shield mr-2"></i>Admin Panel
+                </button>
+            </nav>
+        </div>
+
+        <!-- App Views -->
+        <div>
+            <!-- Booking Form View -->
+            <div id="booking-view">
+                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg max-w-4xl mx-auto">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-700">Book Your Trip</h2>
+                    <form id="booking-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Personal Information -->
+                        <div class="md:col-span-2">
+                            <h3 class="text-lg font-semibold text-indigo-600 mb-3 border-b pb-2">Passenger Details</h3>
+                        </div>
+                        <div>
+                            <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                            <input type="text" id="fullName" name="fullName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., Juan Dela Cruz">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., juan.cruz@email.com">
+                        </div>
+
+                        <!-- Trip Details -->
+                         <div class="md:col-span-2 mt-4">
+                            <h3 class="text-lg font-semibold text-indigo-600 mb-3 border-b pb-2">Trip Details</h3>
+                        </div>
+                        <div>
+                            <label for="route" class="block text-sm font-medium text-gray-700 mb-1">Route</label>
+                            <select id="route" name="route" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                                <option value="Manila to Cebu" data-price="1500">Manila to Cebu</option>
+                                <option value="Cebu to Manila" data-price="1500">Cebu to Manila</option>
+                                <option value="Batangas to Caticlan (Boracay)" data-price="1200">Batangas to Caticlan (Boracay)</option>
+                                <option value="Caticlan (Boracay) to Batangas" data-price="1200">Caticlan (Boracay) to Batangas</option>
+                                <option value="Matnog to Allen" data-price="250">Matnog to Allen</option>
+                                <option value="Allen to Matnog" data-price="250">Allen to Matnog</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="travelDate" class="block text-sm font-medium text-gray-700 mb-1">Travel Date</label>
+                            <input type="date" id="travelDate" name="travelDate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="adults" class="block text-sm font-medium text-gray-700 mb-1">Adults (12+)</label>
+                            <input type="number" id="adults" name="adults" min="1" value="1" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="children" class="block text-sm font-medium text-gray-700 mb-1">Children (3-11)</label>
+                            <input type="number" id="children" name="children" min="0" value="0" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        
+                        <!-- Submission Button -->
+                        <div class="md:col-span-2 text-right mt-4">
+                            <button type="submit" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105">
+                                <i class="fas fa-calculator mr-2"></i>Calculate & Review
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Panel View -->
+            <div id="admin-view" class="hidden">
+                 <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-700 mb-2 md:mb-0">Confirmed Bookings</h2>
+                        <div class="text-xs text-gray-500 bg-gray-100 p-2 rounded-md">
+                            <span class="font-semibold">Your Admin User ID:</span> <span id="admin-user-id">loading...</span>
+                        </div>
+                    </div>
+                    <div class="table-container overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking ID</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Passenger</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trip Details</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-table-body" class="bg-white divide-y divide-gray-200">
+                                <!-- Bookings will be dynamically inserted here -->
+                                <tr><td colspan="5" class="text-center p-8 text-gray-500">Loading bookings...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg transform transition-all">
+            <div class="p-8">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Confirm Your Booking</h3>
+                <div id="modal-summary" class="space-y-3 text-gray-600">
+                    <!-- Booking summary will be injected here -->
+                </div>
+                <div class="mt-6 pt-4 border-t">
+                    <p class="text-xl font-bold text-indigo-700">Total Price: <span id="modal-total-price"></span></p>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-8 py-4 flex justify-end space-x-4 rounded-b-2xl">
+                <button id="cancel-booking-btn" class="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold">Cancel</button>
+                <button id="confirm-booking-btn" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 font-bold">
+                    <i class="fas fa-check-circle mr-2"></i>Confirm & Book
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message Toast -->
+    <div id="success-toast" class="fixed top-5 right-5 bg-green-500 text-white py-3 px-6 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300">
+        <p><i class="fas fa-check-circle mr-2"></i>Booking confirmed!</p>
+        <p class="text-sm">Your Booking ID is: <strong id="success-booking-id"></strong></p>
+    </div>
+
+    <!-- Firebase and App Logic -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Firebase Configuration ---
+        // These variables are provided by the environment.
+        const firebaseConfig = {
+  apiKey: "AIzaSyCK4ay5fkJlua3Y4ISCIlBC3N70UW2uAOk",
+  authDomain: "myferrybooking.firebaseapp.com",
+  projectId: "myferrybooking",
+  storageBucket: "myferrybooking.firebasestorage.app",
+  messagingSenderId: "701482263912",
+  appId: "1:701482263912:web:6493097278fc42db6562dd"
+};
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'ferry-booking-default';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // --- Global Variables ---
+        let db, auth, userId;
+        let currentBookingData = null;
+
+        // --- DOM Elements ---
+        const bookingForm = document.getElementById('booking-form');
+        const confirmationModal = document.getElementById('confirmation-modal');
+        const adminView = document.getElementById('admin-view');
+        const bookingView = document.getElementById('booking-view');
+        const tabAdmin = document.getElementById('tab-admin');
+        const tabBooking = document.getElementById('tab-booking');
+        
+        // --- Initialization ---
+        async function initializeFirebase() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        console.log("User is signed in with UID:", userId);
+                        document.getElementById('admin-user-id').textContent = userId;
+                        // Once authenticated, start listening for bookings for the admin panel
+                        listenForBookings();
+                    } else {
+                        console.log("User is signed out.");
+                    }
+                });
+
+                // Sign in the user
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+                document.getElementById('bookings-table-body').innerHTML = `<tr><td colspan="5" class="text-center p-8 text-red-500">Error connecting to the database.</td></tr>`;
+            }
+        }
+
+        // --- View Switching Logic ---
+        function showView(viewId) {
+            bookingView.classList.toggle('hidden', viewId !== 'booking-view');
+            adminView.classList.toggle('hidden', viewId !== 'admin-view');
+            tabBooking.classList.toggle('tab-active', viewId === 'booking-view');
+            tabAdmin.classList.toggle('tab-active', viewId === 'admin-view');
+        }
+
+        // --- Booking Form Logic ---
+        bookingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(bookingForm);
+            const routeSelect = document.getElementById('route');
+            const selectedOption = routeSelect.options[routeSelect.selectedIndex];
+            const pricePerAdult = parseFloat(selectedOption.getAttribute('data-price'));
+            const pricePerChild = pricePerAdult * 0.5; // Children are half price
+
+            const adults = parseInt(formData.get('adults'));
+            const children = parseInt(formData.get('children'));
+            const totalPrice = (adults * pricePerAdult) + (children * pricePerChild);
+
+            currentBookingData = {
+                fullName: formData.get('fullName'),
+                email: formData.get('email'),
+                route: formData.get('route'),
+                travelDate: formData.get('travelDate'),
+                passengers: { adults, children },
+                totalPrice: totalPrice,
+                status: 'Confirmed' // Default status
+            };
+            
+            // Populate and show modal
+            document.getElementById('modal-summary').innerHTML = `
+                <p><strong>Name:</strong> ${currentBookingData.fullName}</p>
+                <p><strong>Route:</strong> ${currentBookingData.route}</p>
+                <p><strong>Date:</strong> ${new Date(currentBookingData.travelDate).toDateString()}</p>
+                <p><strong>Passengers:</strong> ${adults} Adult(s), ${children} Child(ren)</p>
+            `;
+            document.getElementById('modal-total-price').textContent = `₱${totalPrice.toLocaleString()}`;
+            confirmationModal.classList.remove('hidden');
+        });
+
+        // --- Modal Logic ---
+        document.getElementById('cancel-booking-btn').addEventListener('click', () => {
+            confirmationModal.classList.add('hidden');
+            currentBookingData = null;
+        });
+
+        document.getElementById('confirm-booking-btn').addEventListener('click', async () => {
+            if (!currentBookingData || !db) return;
+            
+            try {
+                const bookingId = `OF-${Date.now().toString().slice(-6)}`;
+                const docRef = await addDoc(collection(db, `/artifacts/${appId}/public/data/bookings`), {
+                    ...currentBookingData,
+                    bookingId: bookingId,
+                    createdAt: serverTimestamp()
+                });
+
+                console.log("Document written with ID: ", docRef.id);
+                
+                // Show success toast
+                document.getElementById('success-booking-id').textContent = bookingId;
+                const successToast = document.getElementById('success-toast');
+                successToast.classList.remove('translate-x-full');
+                setTimeout(() => {
+                    successToast.classList.add('translate-x-full');
+                }, 4000);
+
+                // Hide modal and reset form
+                confirmationModal.classList.add('hidden');
+                bookingForm.reset();
+                currentBookingData = null;
+
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                alert("There was an error saving your booking. Please try again.");
+            }
+        });
+
+        // --- Admin Panel Logic ---
+        function listenForBookings() {
+            const bookingsCollection = collection(db, `/artifacts/${appId}/public/data/bookings`);
+            const q = query(bookingsCollection); // You could add orderBy here if you create an index in Firestore
+
+            onSnapshot(q, (querySnapshot) => {
+                const tableBody = document.getElementById('bookings-table-body');
+                if (querySnapshot.empty) {
+                    tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-8 text-gray-500">No bookings found yet.</td></tr>`;
+                    return;
+                }
+
+                tableBody.innerHTML = ''; // Clear existing rows
+                const bookings = [];
+                querySnapshot.forEach(doc => {
+                    bookings.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Sort by creation date descending (newest first)
+                bookings.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+
+                bookings.forEach(booking => {
+                    const travelDate = booking.travelDate ? new Date(booking.travelDate).toLocaleDateString() : 'N/A';
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-gray-50";
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-semibold text-indigo-600">${booking.bookingId || 'N/A'}</div>
+                            <div class="text-xs text-gray-500">${booking.createdAt ? booking.createdAt.toDate().toLocaleString() : ''}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">${booking.fullName}</div>
+                            <div class="text-sm text-gray-500">${booking.email}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${booking.route}</div>
+                            <div class="text-sm text-gray-500">On ${travelDate}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                            ₱${booking.totalPrice.toLocaleString()}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <select data-doc-id="${booking.id}" class="status-select w-full p-2 border-gray-300 rounded-md bg-white focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="Confirmed" ${booking.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+                                <option value="Boarded" ${booking.status === 'Boarded' ? 'selected' : ''}>Boarded</option>
+                                <option value="Cancelled" ${booking.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                            </select>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }, (error) => {
+                console.error("Error listening to bookings:", error);
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-8 text-red-500">Error fetching bookings. Check console for details.</td></tr>`;
+            });
+        }
+
+        // --- Status Update Logic ---
+        document.addEventListener('change', async (e) => {
+            if (e.target.classList.contains('status-select')) {
+                const docId = e.target.getAttribute('data-doc-id');
+                const newStatus = e.target.value;
+                
+                const docRef = doc(db, `/artifacts/${appId}/public/data/bookings`, docId);
+                try {
+                    await updateDoc(docRef, {
+                        status: newStatus
+                    });
+                    console.log(`Booking ${docId} status updated to ${newStatus}`);
+                    // Optional: show a small success indicator
+                    e.target.style.borderColor = 'green';
+                    setTimeout(() => { e.target.style.borderColor = ''; }, 1000);
+                } catch (error) {
+                    console.error("Error updating status: ", error);
+                    alert('Failed to update status.');
+                    // Optional: show an error indicator
+                     e.target.style.borderColor = 'red';
+                    setTimeout(() => { e.target.style.borderColor = ''; }, 1000);
+                }
+            }
+        });
+        
+        // --- Event Listeners for Tabs ---
+        tabBooking.addEventListener('click', () => showView('booking-view'));
+        tabAdmin.addEventListener('click', () => showView('admin-view'));
+        
+        // --- Set minimum date for travel date input to today ---
+        function setMinTravelDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('travelDate').setAttribute('min', today);
+        }
+
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            setMinTravelDate();
+            initializeFirebase();
+        });
+
+    </script>
+</body>
+</html>
